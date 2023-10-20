@@ -1,0 +1,9 @@
+189c189,194
+<         model = BartForConditionalGeneration.from_pretrained(language_model_name)
+---
+>         print("model_name: ", language_model_name)
+>         if language_model_name == 'bart-base':
+>             language_model_name_prefix = 'facebook/bart-base'
+>             model = BartForConditionalGeneration.from_pretrained(language_model_name_prefix)
+>         else:
+>             model = BartForConditionalGeneration.from_pretrained(language_model_name)

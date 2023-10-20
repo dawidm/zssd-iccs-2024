@@ -1,0 +1,10 @@
+936c936
+<     def __init__(self, data_dir, tokenizer, opt,data_type ):
+---
+>     def __init__(self, data_dir, tokenizer, opt,data_type, all_sample_types=False):
+945a946
+>         self.all_sample_types = all_sample_types
+1011c1012
+<                 if int(row['seen?']) == self.type:
+---
+>                 if int(row['seen?']) == self.type or self.all_sample_types:

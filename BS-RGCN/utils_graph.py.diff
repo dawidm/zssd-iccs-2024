@@ -1,0 +1,9 @@
+104c104
+<             sg = subgraph_dense(node, G, G_reverse, depth)
+---
+>             sg = subgraph_dense(node.lower(), G, G_reverse, depth)
+106c106
+<             sg = subgraph_sparse(node, G, G_reverse)
+---
+>             sg = subgraph_sparse(node.lower(), G, G_reverse)
+

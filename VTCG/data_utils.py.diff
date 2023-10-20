@@ -1,0 +1,25 @@
+6a7
+> from tqdm import tqdm
+16a18,19
+>         print(f'loading {data_name}...')
+> 
+39c42
+<         for i in self.data_file.index:
+---
+>         for i in tqdm(self.data_file.index):
+43c46
+<             self.data["topic_type"].append(row["type_idx"])
+---
+>             self.data["topic_type"].append(row.get("type_idx",0))
+45,47c48,50
+<             self.data["instance_id"].append(row["new_id"])
+<             self.data["data_type_mark"].append(row["seen?"])
+<             self.data["new_topic"].append(row["new_topic"])
+---
+>             self.data["instance_id"].append(row.get("new_id",0))
+>             self.data["data_type_mark"].append(row.get("seen?", 0))
+>             self.data["new_topic"].append(row.get("new_topic", ""))
+91c94
+<         for i in range(len(self.data["input_ids"])):
+---
+>         for i in tqdm(range(len(self.data["input_ids"]))):

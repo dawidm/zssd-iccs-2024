@@ -1,0 +1,74 @@
+29a30
+> from sklearn.metrics import classification_report
+72,73c73,74
+<     parser.add_argument('--output_dir', type=str, default='model_output')
+<     parser.add_argument("--data_dir", default=None, type=str, required=True,
+---
+>     parser.add_argument('--output_dir', type=str, default='output')
+>     parser.add_argument("--data_dir", default='VAST', type=str,
+75c76
+<     parser.add_argument("--task", default='all', type=str, required=True,
+---
+>     parser.add_argument("--task", default='zero', type=str,
+77c78
+<     parser.add_argument("--model_type", default=None, type=str, required=True,
+---
+>     parser.add_argument("--model_type", default='bert_stance', type=str,
+80c81
+<     parser.add_argument("--model_name_or_path", default=None, type=str, required=True,
+---
+>     parser.add_argument("--model_name_or_path", default='bert-base-uncased', type=str,
+87c88
+<     parser.add_argument("--max_seq_length", default=512, type=int,
+---
+>     parser.add_argument("--max_seq_length", default=256, type=int,
+90c91
+<     parser.add_argument("--do_lower_case", action='store_true',
+---
+>     parser.add_argument("--do_lower_case", action='store_true', default=True,
+92c93
+<     parser.add_argument("--do_train", action='store_true',
+---
+>     parser.add_argument("--do_train", action='store_true', default=True,
+94c95
+<     parser.add_argument("--do_test", action='store_true',
+---
+>     parser.add_argument("--do_test", action='store_true', default=True,
+131,136c132
+<     # args = parser.parse_args()
+<     args = parser.parse_args(["--data_dir", "VAST", "--model_type", "bert_stance",              
+<                               '--model_name_or_path', 'bert-base-uncased',
+<                               "--do_lower_case",'--do_test','--do_train',
+<                               "--max_seq_length", '256', "--task", 'zero',
+<                               '--output_dir','output'])
+---
+>     args = parser.parse_args()
+310a307,314
+> 
+> def f1_macro_fa_score(labels, preds):
+>     clf_report = classification_report(labels, preds, output_dict=True, zero_division=0)
+>     f1_favor = clf_report['0']['f1-score']
+>     f1_against = clf_report['1']['f1-score']
+>     return (f1_favor + f1_against) / 2
+> 
+> 
+340c344,347
+<     scores = {'oppose-f1': ts_f1[0],'support-f1': ts_f1[1],'neutral-f1': ts_f1[2],'macro-f1': macro_f1, "micro-f1": micro_f1}
+---
+>     fa_f1 = f1_macro_fa_score(labels.detach().cpu(), preds.detach().cpu())
+> 
+>     scores = {'oppose-f1': ts_f1[0],'support-f1': ts_f1[1],'neutral-f1': ts_f1[2],
+>               'macro-f1': macro_f1, "micro-f1": micro_f1, "macro-f1-fa": fa_f1}
+388c395
+<     torch.cuda.set_device(1)
+---
+>     torch.cuda.set_device(0)
+429c436
+<         with open (args.output_dir+'/test_results.txt','w') as f:
+---
+>         with open (args.output_dir+'/test_results.txt', 'a') as f:
+435c442
+<             f.write("results "+str(results)+'\n')
+---
+>             f.write(f"results (seed: {args.seed}) "+str(results)+'\n')
+

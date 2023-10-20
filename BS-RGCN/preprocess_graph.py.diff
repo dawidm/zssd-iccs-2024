@@ -1,0 +1,4 @@
+89c89
+<         concept_graphs[node] = subgraph_for_concept(node, G, G_reverse, concept_map, relation_map)
+---
+>         concept_graphs[node.lower()] = subgraph_for_concept(node.lower(), G, G_reverse, concept_map, relation_map)

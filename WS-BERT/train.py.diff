@@ -1,0 +1,15 @@
+6c6
+<     parser.add_argument('--data', type=str, choices=('vast', 'pstance', 'covid'), default='vast',
+---
+>     parser.add_argument('--data', type=str, choices=('vast', 'pstance', 'covid', 'semeval'), default='vast',
+13c13,16
+<                                                       'stay_at_home_orders', 'school_closures', ''), default='bernie',
+---
+>                                                       'stay_at_home_orders', 'school_closures', '', 'Hillary_Clinton',
+>                                                       'Donald_Trump', 'Legalization_of_Abortion',
+>                                                       'Climate_Change_is_a_Real_Concern',
+>                                                       'Feminist_Movement', 'Atheism'), default='bernie',
+30a34,35
+> 
+>     parser.add_argument('--gradient_acc_2', action='store_true')
+

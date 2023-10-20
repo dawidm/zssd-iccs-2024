@@ -1,0 +1,5 @@
+130c130
+<             xg = np.concatenate([concept_graphs[item] for item in n])
+---
+>             xg = np.concatenate([concept_graphs[item.lower()] for item in n])
+

@@ -1,0 +1,56 @@
+10c10
+< def parse_processed_stance_dataset(domain, max_words):
+---
+> def parse_processed_stance_dataset(domain, max_words, no_below=2):
+31c31
+<     dico.filter_extremes(no_below=2, keep_n=max_words)
+---
+>     dico.filter_extremes(no_below=no_below, keep_n=max_words)
+75,76c75,76
+< def get_stance_dataset(max_words=5000, exp_type='train'):
+<     datasets, dico = parse_processed_stance_dataset(exp_type, max_words)
+---
+> def get_stance_dataset(max_words=5000, exp_type='train', no_below=2):
+>     datasets, dico = parse_processed_stance_dataset(exp_type, max_words, no_below=no_below)
+92c92
+<     tags = ['PROPN', 'NOUN', 'ADJ', 'ADV']
+---
+>     tags = ['PROPN', 'NOUN', 'ADJ', 'ADV', 'VERB']
+96c96
+<             doc = nlp(item)
+---
+>             doc = nlp(f' {item} ')
+99,106c99,100
+<                 if token.pos_ not in tags:
+<                     switch = 1
+<                     break
+<                 else:
+<                     continue
+<                 
+<             if switch == 0:
+<                 seeds.append(item)
+---
+>                 if token.pos_ in tags:
+>                     seeds.append(item)
+115c109
+<     tags = ['PROPN', 'NOUN', 'ADJ', 'ADV']
+---
+>     tags = ['PROPN', 'NOUN', 'ADJ', 'ADV', 'VERB']
+119,120c113
+<             doc = nlp(item)
+<             switch = 0
+---
+>             doc = nlp(f' {item} ')
+122,129c115,116
+<                 if token.pos_ not in tags:
+<                     switch = 1
+<                     break
+<                 else:
+<                     continue
+<                 
+<             if switch == 0:
+<                 seeds.append(item)
+---
+>                 if token.pos_ in tags:
+>                     seeds.append(item)
+

@@ -1,0 +1,36 @@
+116c116
+< def sentence_features(model, split, all_seeds, concept_graphs, relation_map, unique_nodes_mapping):
+---
+> def sentence_features(model, split, all_seeds, concept_graphs, relation_map, unique_nodes_mapping, max_words=5000, no_below=2):
+120c120
+<     x, dico = get_stance_dataset(exp_type=split)
+---
+>     x, dico = get_stance_dataset(exp_type=split, max_words=max_words, no_below=no_below)
+129c129,133
+<         xg = np.concatenate([concept_graphs[item] for item in n])
+---
+>         if len(n) == 0:
+>             print('missing graph embedings for sample use average of all graphs')
+>             xg = np.concatenate(list(concept_graphs.values()))
+>         else:
+>             xg = np.concatenate([concept_graphs[item.lower()] for item in n])
+137a142,151
+> 
+>         if xg.shape[0] == 0:
+>             print('missing graph embedings for sample use average of all graphs')
+>             xg = np.concatenate(list(concept_graphs.values()))
+>             xg = xg[~np.all(xg == 0, axis=1)]
+>             absent1 = set(xg[:, 0]) - unique_nodes_mapping.keys()
+>             absent2 = set(xg[:, 2]) - unique_nodes_mapping.keys()
+>             absent = absent1.union(absent2)
+>             for item in absent:
+>                 xg = xg[~np.any(xg == item, axis=1)]
+179a194,195
+>     parser.add_argument('--max-words', type=int, default=5000, help='grad norm')
+>     parser.add_argument('--no-below', type=int, default=2, help='grad norm')
+210c226,227
+<         sf = sentence_features(model, split, all_seeds, concept_graphs, relation_map, unique_nodes_mapping)
+---
+>         sf = sentence_features(model, split, all_seeds, concept_graphs, relation_map,
+>                                unique_nodes_mapping, max_words=args.max_words, no_below=args.no_below)
+

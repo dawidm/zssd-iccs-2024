@@ -1,0 +1,8 @@
+22a23
+>
+106c107,109
+<     tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=True, do_lower_case=do_lower_case)
+---
+>     if model_path == "bart-base":
+>         model_path_prefix = "facebook/bart-base"
+>     tokenizer = AutoTokenizer.from_pretrained(model_path_prefix, use_fast=True, do_lower_case=do_lower_case)

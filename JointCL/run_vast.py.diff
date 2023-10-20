@@ -1,0 +1,86 @@
+21c21,22
+< gpu_id = 3
+---
+> gpu_id = 0
+> gpu_id_kmeans = 1
+23c24
+< os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_id)
+---
+> #os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_id)
+37a39
+>         testfull_file_name = './vast_testfull1.dat'
+41a44
+>             self.testset_full = pickle.load(open(testfull_file_name, 'rb'))
+42a46,57
+>             self.trainset = ZeroshotDataset(data_dir=self.opt.train_dir,tokenizer=tokenizer,
+>                                             opt=self.opt, data_type='train')
+>             self.valset = ZeroshotDataset(data_dir=self.opt.dev_dir, tokenizer=tokenizer,
+>                                           opt=self.opt, data_type='dev')
+>             self.testset = ZeroshotDataset(data_dir=self.opt.test_dir, tokenizer=tokenizer,
+>                                            opt=self.opt, data_type='test')
+>             self.testset_full = ZeroshotDataset(data_dir=self.opt.test_dir, tokenizer=tokenizer,
+>                                                 opt=self.opt, data_type='test', all_sample_types=True)
+>         pickle.dump(self.trainset, open(train_file_name, 'wb'))
+>         pickle.dump(self.valset, open(dev_file_name, 'wb'))
+>         pickle.dump(self.testset, open(test_file_name, 'wb'))
+>         pickle.dump(self.testset_full, open(testfull_file_name, 'wb'))
+44,49d58
+<             self.trainset = ZeroshotDataset(data_dir=self.opt.train_dir,tokenizer=tokenizer, opt=self.opt,data_type = 'train')
+<             self.valset = ZeroshotDataset(data_dir=self.opt.dev_dir, tokenizer=tokenizer, opt=self.opt,data_type = 'dev')
+<             self.testset = ZeroshotDataset(data_dir=self.opt.test_dir,tokenizer=tokenizer, opt=self.opt,data_type = 'test')
+<             pickle.dump(self.trainset, open(train_file_name, 'wb'))
+<             pickle.dump(self.valset, open(dev_file_name, 'wb'))
+<             pickle.dump(self.valset, open(test_file_name, 'wb'))
+75a85
+>         self.test_tradition_full()
+121c131
+<             cfg.device = gpu_id
+---
+>             cfg.device = gpu_id_kmeans
+348a359,404
+>         print(f'testing on ZS test set ({self.testset} samples)')
+>         all_labels = []
+>         all_logits = []
+>         eval_loss = 0
+>         cnt = 0
+>         for i_batch, batch in enumerate(test_loader):
+>             input_features = [batch[feat_name].to(self.opt.device) for feat_name in self.opt.input_features]
+>             true_stance = batch['polarity']
+>             if opt.n_gpus > 0:
+>                 true_stance = true_stance.to(self.opt.device)
+>             with torch.no_grad():
+>                 if 'scl' in self.opt.model_name:
+>                     try:
+>                         pickle.dump(self.cluster_result, open(opt.output_dir + '/cluster_result', 'wb'))
+>                     except:
+>                         self.cluster_result = pickle.load(open(opt.output_dir +'/cluster_result', 'rb'))
+>                     logits,_ = self.model(input_features+self.cluster_result)
+>                     loss = self.logits_criterion(logits, true_stance)
+>                 else:
+>                     logits = self.model(input_features)
+>                     loss = self.criterion(logits, true_stance)
+>             if self.opt.n_gpus > 1:
+>                 loss = loss.mean().item()
+>             else:
+>                 loss = loss.item()
+>             eval_loss += loss
+>             labels = true_stance.detach().cpu().numpy()
+>             logits = logits.detach().cpu().numpy()
+>             all_labels.append(labels)
+>             all_logits.append(logits)
+>             cnt = cnt + 1
+>         all_labels = np.concatenate(all_labels, axis=0)
+>         all_logits = np.concatenate(all_logits, axis=0)
+>         preds = all_logits.argmax(axis=1)
+>         acc = accuracy_score(y_true=all_labels, y_pred=preds)
+>         f1 = f1_score(all_labels, preds, average='macro')
+>         print(classification_report(all_labels, preds, digits=6))
+>         print("ZS Test Acc: {} F1:{}".format(acc, f1))
+>         self.model.train()
+>         return acc,f1
+> 
+>     def test_tradition_full(self):
+>         self.model.eval()
+>         sampler = RandomSampler(self.testset_full)
+>         test_loader = DataLoader(dataset=self.testset_full, batch_size=self.opt.eval_batch_size, sampler=sampler)
+>         print(f'testing on full test set ({self.testset_full} samples)')

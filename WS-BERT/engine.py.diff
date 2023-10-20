@@ -1,0 +1,21 @@
+11c11
+<         os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
+---
+>         #os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
+14a15,17
+>         if args.gradient_acc_2:
+>             print(f'gradient acc for 2 steps, effective batch size: {args.batch_size * 2}')
+> 
+114d116
+<             self.optimizer.zero_grad()
+130c132,138
+<             self.optimizer.step()
+---
+>             if self.args.gradient_acc_2:
+>                 if (i % 2 == 1) or (i == len(self.train_loader) - 1):
+>                     self.optimizer.step()
+>                     self.optimizer.zero_grad()
+>             else:
+>                 self.optimizer.step()
+>                 self.optimizer.zero_grad()
+

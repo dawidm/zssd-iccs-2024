@@ -1,0 +1,10 @@
+111,112c111,115
+<             l = ast.literal_eval(l)
+<             target = ' '.join(u for u in l)
+---
+>             if type(l) is not str:
+>                 l = ast.literal_eval(l)
+>                 target = ' '.join(u for u in l)
+>             else:
+>                 target = l
+
