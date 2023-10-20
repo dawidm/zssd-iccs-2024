@@ -22,7 +22,10 @@ Our experiments scripts are in folder `experiments-scripts`. Details:
 ## Reproduced experiments
 Code changes required for reproducing experiments are in folders: `JointCL`, `VTCG`, `WS-BERT`, `BS-RGCN`.
 
-
+## Datasets files
+Datasets should be put in `data` directory with following filenames:
+* Sem2016T6: `se_train.csv`, `se_test.csv`
+* VAST: `vast_train.csv`, `vast_dev.csv`, `vast_test.csv`. `datasets-processing/vast_topic_prep.py` should be run before running experiments.
 
 
 
