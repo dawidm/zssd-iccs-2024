@@ -22,6 +22,9 @@ Our experiments scripts are in folder `experiments-scripts`. Details:
 ## Reproduced experiments
 Code changes required for reproducing experiments are in folders: `JointCL`, `VTCG`, `WS-BERT`, `BS-RGCN`.
 
+## LLMs experiments
+All prompts used in our experiments with LLMs are in `llm-prompts.md` file.
+
 ## Datasets files
 Datasets should be put in `data` directory with following filenames:
 * Sem2016T6: `se_train.csv`, `se_test.csv`
